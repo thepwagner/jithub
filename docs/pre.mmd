@@ -1,0 +1,24 @@
+sequenceDiagram
+    client->>+gpr: get_pkg(auth, version)
+    alt package found
+      gpr-->>client: pkg
+    else
+      gpr-->>-client: 404
+    end
+
+
+    participant actions
+    participant gh
+    note left of maintainer: Maintainer releases
+    maintainer->>+gh: release(auth, version)
+    gh-->>maintainer: OK
+
+    gh-xactions: released
+    deactivate gh
+    activate actions
+    actions->>+gpr: publish_pkg(auth, version)
+    gpr-->>-actions: OK
+    deactivate actions
+
+    client->>gpr: get_pkg(auth, version)
+    gpr-->>client: pkg

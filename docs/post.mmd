@@ -1,0 +1,24 @@
+sequenceDiagram
+    client->>jithub: get_pkg(version)
+    
+    jithub->>gpr: get_pkg(auth, version)
+    alt package found
+      gpr-->>jithub: pkg_url
+      jithub-->>client: redirect(pkg_url)
+      client->>gpr: get_pkg()
+      gpr-->>client: pkg
+    else
+      gpr-->>jithub: 404
+      jithub-->>client: 429
+      jithub->>actions: release_pkg
+      activate actions
+      actions->>+gpr: publish_pkg(auth, version)
+      gpr-->>-actions: OK
+      deactivate actions
+    end
+    
+    client->>jithub: get_pkg(version)
+    jithub->>gpr: get_pkg(version)
+    gpr-->>jithub: pkg_url
+    note left of jithub: as above...
+    gpr-->>client: pkg
