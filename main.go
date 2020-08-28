@@ -18,6 +18,6 @@ func main() {
 	}
 
 	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		logrus.WithError(err).Fatal("server error")
+		logrus.WithError(err).Fatal("server errorz")
 	}
 }
